@@ -1,0 +1,12 @@
+---
+- name: Ensure docker volumes are managed
+  include_tasks: manage_volumes.yml
+
+- name: Ensure docker networks are managed
+  include_tasks: manage_networks.yml
+
+- name: Ensure docker services are managed
+  include_tasks: manage_service.yml
+  with_items: "{{ docker_compose_services }}"
+  loop_control:
+    loop_var: service

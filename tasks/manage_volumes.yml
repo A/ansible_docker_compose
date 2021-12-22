@@ -1,0 +1,6 @@
+---
+- name: Ensure docker {{ item.name }} volume are managed
+  community.docker.docker_volume:
+    volume_name: "{{ item.name }}"
+    state: "{{ item.state }}"
+  with_items: "{{ docker_volumes }}"

@@ -1,0 +1,6 @@
+---
+- name: Ensure {{ item }} network is managed
+  become: true
+  community.docker.docker_network:
+    name: "{{ item }}"
+  with_items: "{{ docker_networks }}"

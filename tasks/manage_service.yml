@@ -1,0 +1,37 @@
+---
+- name: Ensure docker-compose serive is managed
+  block:
+    - name: Ensure {{ service.name }} dir exists
+      file:
+        path: "{{ docker_compose_service_remote_dir }}/{{ service.name }}"
+        state: directory
+
+    - name: Ensure {{ service.name }} project is up-to-date
+      synchronize:
+        src: "{{ docker_compose_service_host_dir }}/{{ service.name }}/"
+        dest: "{{ docker_compose_service_remote_dir }}/{{ service.name }}"
+
+    - name: Ensure {{ service.name }} data files are synchronized
+      become: true
+      synchronize:
+        dest: "{{ item.dest }}"
+        src: "{{ item.src }}"
+        delete: "{{ item.delete | default(false) }}"
+        rsync_opts: "{{ item.rsync_opts | default(omit) }}"
+      with_items: "{{ service.synchronize }}"
+      when: service.synchronize is defined
+      
+    - name: Ensure {{ service.name }} is managed
+      become: true
+      community.docker.docker_compose:
+        project_src: "{{ docker_compose_service_remote_dir }}/{{ service.name }}"
+        project_name: "{{ service.name }}"
+        state: "{{ service.state }}"
+        pull: "{{ service.pull | default(false) }}"
+        restarted: "{{ service.restarted | default('no') }}"
+        recreate: "{{ service.recreate | default('smart') }}"
+        remove_images: "{{ service.remove_images | default(omit) }}"
+        remove_volumes: "{{ service.remove_volumes | default(omit) }}"
+      environment: "{{ service.environment | default(omit)}}"
+
+  when: (SERVICES is not defined) or (service.name in SERVICES)

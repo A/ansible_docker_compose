@@ -1,0 +1,5 @@
+---
+docker_volumes: []
+docker_networks: []
+docker_compose_service_host_dir: "{{ playbook_dir }}/services"
+docker_compose_service_remote_dir: "{{ ansible_env.HOME }}/services"
