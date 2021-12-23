@@ -7,13 +7,13 @@
         state: directory
 
     - name: Ensure {{ service.name }} project is up-to-date
-      synchronize:
+      ansible.posix.synchronize:
         src: "{{ docker_compose_service_host_dir }}/{{ service.name }}/"
         dest: "{{ docker_compose_service_remote_dir }}/{{ service.name }}"
 
     - name: Ensure {{ service.name }} data files are synchronized
       become: true
-      synchronize:
+      ansible.posix.synchronize:
         dest: "{{ item.dest }}"
         src: "{{ item.src }}"
         delete: "{{ item.delete | default(false) }}"
