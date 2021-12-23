@@ -2,11 +2,8 @@
 - name: Ensure {{ item.name }} is managed
   apt:
     name: "{{ item.name }}"
-    state: "{{ item.state }}"
+    state: present
   with_items:
-    - name: python3
-      state: present
-    - name: python3-docker
-      state: present
-    - name: docker-compose
-      state: present
+    - python3
+    - python3-docker
+    - docker-compose
