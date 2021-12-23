@@ -1,4 +1,7 @@
 ---
+- name: Ensure docker python packages are managed
+  include_tasks: manage_docker_libs.yml
+
 - name: Ensure docker volumes are managed
   include_tasks: manage_volumes.yml
 
