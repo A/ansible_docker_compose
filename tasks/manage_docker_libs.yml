@@ -2,7 +2,7 @@
 - name: Ensure {{ item.name }} is managed
   become: True
   apt:
-    name: "{{ item.name }}"
+    name: "{{ item }}"
     state: present
   with_items:
     - python3
