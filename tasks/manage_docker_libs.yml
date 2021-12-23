@@ -1,5 +1,6 @@
 ---
 - name: Ensure {{ item.name }} is managed
+  become: True
   apt:
     name: "{{ item.name }}"
     state: present
