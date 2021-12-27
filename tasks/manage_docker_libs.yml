@@ -1,5 +1,5 @@
 ---
-- name: Ensure {{ item.name }} is managed
+- name: Ensure {{ item }} is managed
   become: True
   apt:
     name: "{{ item }}"
