@@ -28,6 +28,7 @@
         project_name: "{{ service.name }}"
         state: "{{ service.state }}"
         pull: "{{ service.pull | default(false) }}"
+        build: "{{ service.build | default('no')}}"
         restarted: "{{ service.restarted | default('no') }}"
         recreate: "{{ service.recreate | default('smart') }}"
         remove_images: "{{ service.remove_images | default(omit) }}"
