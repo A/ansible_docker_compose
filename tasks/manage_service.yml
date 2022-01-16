@@ -20,7 +20,7 @@
         rsync_opts: "{{ item.rsync_opts | default(omit) }}"
       with_items: "{{ service.synchronize }}"
       when: service.synchronize is defined
-      
+
     - name: Ensure {{ service.name }} is managed
       become: true
       community.docker.docker_compose:
