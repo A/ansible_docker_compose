@@ -6,10 +6,22 @@
         path: "{{ docker_compose_service_remote_dir }}/{{ service.name }}"
         state: directory
 
+    - name: Ensure git repo is up-to-date
+      ansible.builtin.git:
+        repo: "{{ service.repo }}"
+        version: "{{ service.version | default(omit) }}"
+        dest: "{{ docker_compose_service_remote_dir }}/{{ service.name }}"
+        depth: 1
+        accept_hostkey: yes
+        recursive: yes
+        update: yes
+      when: service.repo is defined
+
     - name: Ensure {{ service.name }} project is up-to-date
       ansible.posix.synchronize:
         src: "{{ docker_compose_service_host_dir }}/{{ service.name }}/"
         dest: "{{ docker_compose_service_remote_dir }}/{{ service.name }}"
+      when: service.repo is not defined
 
     - name: Ensure {{ service.name }} data files are synchronized
       become: true
@@ -26,6 +38,8 @@
       community.docker.docker_compose:
         project_src: "{{ docker_compose_service_remote_dir }}/{{ service.name }}"
         project_name: "{{ service.name }}"
+        files: "{{ service.files | default(omit) }}"
+        build: "{{ service.build | default(omit) }}"
         state: "{{ service.state }}"
         pull: "{{ service.pull | default(false) }}"
         restarted: "{{ service.restarted | default('no') }}"

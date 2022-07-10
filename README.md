@@ -49,4 +49,17 @@ docker_compose_services:
       - dest: /var/lib/grafana
         src: "{{ inventory_hostname }}/grafana/"
         delete: false
+
+  # Git & custom compose file support 
+  - name: my-app
+    repo: git@github.com:A/my-app.git
+    files:
+      - docker-compose.prod.yml
+    version: master
+    state: present
+    pull: true
+    build: true
+    restarted: true
+    environment:
+      MY_APP_HOST: my-app.{{ fqdn }}
 ```
