@@ -6,8 +6,18 @@
         path: "{{ docker_compose_service_remote_dir }}/{{ service.name }}"
         state: directory
 
+    - name: Login into Docker Registry
+      become: true
+      community.docker.docker_login:
+        registry_url: "{{ service.docker_login.registry_url }}"
+        username: "{{ service.docker_login.username }}"
+        password: "{{ service.docker_login.password }}"
+        email: "{{ service.docker_login.email | default(omit) }}"
+      when: service.docker_login is defined
+
     - name: Ensure git repo is up-to-date
       ansible.builtin.git:
+        force: "{{ service.force | default(omit)}}"
         repo: "{{ service.repo }}"
         version: "{{ service.version | default(omit) }}"
         dest: "{{ docker_compose_service_remote_dir }}/{{ service.name }}"
@@ -47,5 +57,12 @@
         remove_images: "{{ service.remove_images | default(omit) }}"
         remove_volumes: "{{ service.remove_volumes | default(omit) }}"
       environment: "{{ service.environment | default(omit)}}"
+
+    - name: Logout from the docker registry
+      become: true
+      community.docker.docker_login:
+        state: absent
+      
+      when: service.docker_login is defined
 
   when: (SERVICES is not defined) or (service.name in SERVICES)

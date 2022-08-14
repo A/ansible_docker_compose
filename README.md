@@ -62,4 +62,17 @@ docker_compose_services:
     restarted: true
     environment:
       MY_APP_HOST: my-app.{{ fqdn }}
+
+  ## Pull image from a private registry
+  - name: my-app
+    state: present
+    pull: true
+
+    docker_login:
+      registry_url: https://ghcr.io/
+      username: "{{ secret_github_username }}"
+      password: "{{ secret_github_pat }}"
+
+    environment:
+      CPUS: 28
 ```
